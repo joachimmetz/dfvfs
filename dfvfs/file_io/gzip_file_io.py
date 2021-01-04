@@ -11,7 +11,7 @@ from dfvfs.resolver import resolver
 
 
 class GzipFile(file_io.FileIO):
-  """File-like object of a gzip file.
+  """File input/output (IO) object of a gzip file.
 
   The gzip file format is defined in RFC1952: http://www.zlib.org/rfc-gzip.html
 
@@ -20,16 +20,14 @@ class GzipFile(file_io.FileIO):
         in the gzip file.
   """
 
-  def __init__(self, resolver_context):
-    """Initializes a file-like object.
+  def __init__(self, resolver_context, path_spec):
+    """Initializes a file input/output (IO) object.
 
     Args:
       resolver_context (Context): resolver context.
-
-    Raises:
-      ValueError: when file_object is set.
+      path_spec (PathSpec): a path specification.
     """
-    super(GzipFile, self).__init__(resolver_context)
+    super(GzipFile, self).__init__(resolver_context, path_spec)
     self._compressed_data_size = -1
     self._current_offset = 0
     self._gzip_file_object = None
@@ -178,11 +176,10 @@ class GzipFile(file_io.FileIO):
     if self._gzip_file_object:
       self._gzip_file_object.close()
 
-  def _Open(self, path_spec=None, mode='rb'):
+  def _Open(self, mode='rb'):
     """Opens the file-like object defined by path specification.
 
     Args:
-      path_spec (Optional[PathSpec]): path specification.
       mode (Optional[str]): file access mode.
 
     Raises:
@@ -190,17 +187,13 @@ class GzipFile(file_io.FileIO):
       IOError: if the file-like object could not be opened.
       OSError: if the file-like object could not be opened.
       PathSpecError: if the path specification is incorrect.
-      ValueError: if the path specification is invalid.
     """
-    if not path_spec:
-      raise ValueError('Missing path specification.')
-
-    if not path_spec.HasParent():
+    if not self._path_spec.HasParent():
       raise errors.PathSpecError(
           'Unsupported path specification without parent.')
 
     self._gzip_file_object = resolver.Resolver.OpenFileObject(
-        path_spec.parent, resolver_context=self._resolver_context)
+        self._path_spec.parent, resolver_context=self._resolver_context)
     file_size = self._gzip_file_object.get_size()
 
     self._gzip_file_object.seek(0, os.SEEK_SET)
