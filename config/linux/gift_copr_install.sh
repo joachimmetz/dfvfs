@@ -17,6 +17,7 @@ PYTHON3_DEPENDENCIES="libbde-python3
                       libfsxfs-python3
                       libfvde-python3
                       libfwnt-python3
+                      libgzipf-python3
                       libluksde-python3
                       libqcow-python3
                       libsigscan-python3
@@ -62,6 +63,8 @@ DEBUG_DEPENDENCIES="libbde-debuginfo
                     libfvde-python3-debuginfo
                     libfwnt-debuginfo
                     libfwnt-python3-debuginfo
+                    libgzipf-debuginfo
+                    libgzipf-python3-debuginfo
                     libluksde-debuginfo
                     libluksde-python3-debuginfo
                     libqcow-debuginfo
